@@ -1,0 +1,20 @@
+spring:
+  redis:
+    host: 127.0.0.1
+    database: 1
+    port: 6379
+    password:
+
+  mail:
+    username: 1157982786@qq.com
+    password: gsuikocyrzvfigcc
+    host: smtp.qq.com
+
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/Cinema
+
+server:
+  port: 8080
+
+
