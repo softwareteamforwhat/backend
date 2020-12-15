@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -48,7 +49,7 @@ public class UserDao {
      * @param loginForm 登录信息
      * @return id
      */
-    public String loginUser(LoginForm loginForm) {
+    public User loginUser(LoginForm loginForm) {
         String username = loginForm.getUsername();
         String password = loginForm.getPassword();
         Query query = new Query();
@@ -57,9 +58,28 @@ public class UserDao {
         query.addCriteria(criteria);
         User user = mongoTemplate.findOne(query,User.class,"user");
         if(user!=null && user.getPassword().equals(password)){
-            return String.valueOf(user.getUid());
+            return user;
         }else {
-            return "no such user";
+            return null;
         }
+    }
+
+    /**
+     * 根据id返回user
+     * @param userId 用户id
+     * @return user
+     */
+    public User findUserById(String userId) {
+        return mongoTemplate.findOne(new Query(Criteria.where("_id").is(Long.parseLong(userId))),User.class,"user");
+    }
+
+    /**
+     * 修改密码
+     * @param pwd 新密码
+     */
+    public void updatePwd(String email, String pwd) {
+        Update update = new Update();
+        update.set("password",pwd);
+        mongoTemplate.updateFirst(new Query(Criteria.where("email").is(email)),update,User.class,"user");
     }
 }

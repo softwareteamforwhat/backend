@@ -1,5 +1,6 @@
 package com.example.hcibackend.service;
 
+import com.example.hcibackend.entity.User;
 import com.example.hcibackend.po.LoginForm;
 import com.example.hcibackend.po.RegisterForm;
 import com.example.hcibackend.vo.UserVO;
@@ -32,4 +33,18 @@ public interface UserService {
      * @return userVO
      */
     UserVO login(LoginForm loginForm);
+
+    /**
+     * 发送新密码
+     * @param email 邮箱地址
+     */
+    void sendNewPwd(String email);
+
+    /**
+     * 改变收藏状态
+     * @param uid 用户id
+     * @param movieId 电影id
+     * @return 是否成功
+     */
+    boolean changeFollow(String uid, String movieId);
 }

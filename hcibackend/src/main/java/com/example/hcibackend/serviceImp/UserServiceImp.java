@@ -1,9 +1,12 @@
 package com.example.hcibackend.serviceImp;
 
+import com.example.hcibackend.dao.MovieDao;
 import com.example.hcibackend.dao.UserDao;
+import com.example.hcibackend.entity.User;
 import com.example.hcibackend.po.LoginForm;
 import com.example.hcibackend.po.RegisterForm;
 import com.example.hcibackend.service.RedisService;
+import com.example.hcibackend.service.TokenService;
 import com.example.hcibackend.service.UserService;
 import com.example.hcibackend.vo.UserVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +25,13 @@ public class UserServiceImp implements UserService {
     private RedisService redisService;
 
     @Autowired
+    private TokenService tokenService;
+
+    @Autowired
     private UserDao userDao;
+
+    @Autowired
+    private MovieDao movieDao;
 
     @Resource
     private JavaMailSender javaMailSender;
@@ -70,16 +79,34 @@ public class UserServiceImp implements UserService {
 
     @Override
     public UserVO login(LoginForm loginForm) {
-        String id = userDao.loginUser(loginForm);
-        if(id.equals("no such user")){
+        User user = userDao.loginUser(loginForm);
+        if(user==null){
             return null;
         }else {
             UserVO userVO = new UserVO();
-            userVO.setId(id);
-            userVO.setToken("token:"+id);
-            userVO.setAvatar("https://img.meituan.net/maoyanuser/c524afeb2e56c93093a1b7c26d5ac6b114424.png");
+            userVO.setId(String.valueOf(user.getUid()));
+            userVO.setToken(tokenService.getToken(user));
+            userVO.setAvatar(user.getAvatar());
             return userVO;
         }
+    }
+
+    @Override
+    public void sendNewPwd(String email) {
+        String pwd = createCode();
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(from);
+        message.setTo(email);
+        message.setSubject("邮箱登录验证码");
+        message.setText(pwd);
+        userDao.updatePwd(email,pwd);
+        javaMailSender.send(message);
+    }
+
+    @Override
+    public boolean changeFollow(String uid, String movieId) {
+        int state = movieDao.changeFollow(Long.parseLong(uid),movieId);
+        return state == 0;
     }
 
     /**

@@ -9,12 +9,29 @@ spring:
     username: 1157982786@qq.com
     password: gsuikocyrzvfigcc
     host: smtp.qq.com
+    defaultEncoding: UTF-8
+    properties:
+      mail:
+        smtp:
+          connectiontimeout: 5000
+          timeout: 3000
+          writetimeout: 5000
+          auth: true
+          ssl:
+            trust: smtp.qq.com
+          socketFactory:
+            class: javax.net.ssl.SSLSocketFactory
+            port: 465
+          starttls:
+            enable: true
+            required: true
+
 
   data:
     mongodb:
       uri: mongodb://localhost:27017/Cinema
 
 server:
-  port: 8080
+  port: 8081
 
 
