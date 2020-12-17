@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MovieSearchForm {
-    private String movieState;
+    private int movieState;
     private String movieType;
     private String area;
     private String year;

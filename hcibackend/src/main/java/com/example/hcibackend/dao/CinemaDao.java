@@ -34,11 +34,10 @@ public class CinemaDao {
         int page = cinemaSearchForm.getPage();
         Query query = new Query();
         Criteria criteria = new Criteria();
-        criteria.andOperator(Criteria.where("name").regex(brand),Criteria.where("address").regex(address));
+        criteria.andOperator(Criteria.where("name").regex(brand),Criteria.where("address").regex(address),Criteria.where("services.name").regex(tag));
         query.addCriteria(criteria);
-        long count = mongoTemplate.count(query, Movie.class,"movie");
-        List<Cinema> cinemas = mongoTemplate.find(query.with(Sort.by(Sort.Order.desc(sortType))).skip(10 * (page - 1)).limit(10), Cinema.class,"hall");
-        cinemas.removeIf(cinema -> !cinema.getServices().stream().map(Service::getName).collect(Collectors.toList()).contains(tag));
+        long count = mongoTemplate.count(query, Cinema.class,"cinema");
+        List<Cinema> cinemas = mongoTemplate.find(query.with(Sort.by(Sort.Order.desc(sortType))).skip(10 * (page - 1)).limit(10), Cinema.class,"cinema");
         CinemaList cinemaList = new CinemaList();
         cinemaList.setSum(count);
         List<CinemaBasic> cinemaBasics = new ArrayList<>();

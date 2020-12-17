@@ -18,9 +18,9 @@ public class MovieRank {
     private String picture;
     private String name;
     private List<String> actors;
-    private String time;
+    private String date;
     private int follow;
-    private int rank;
+    private double rank;
 
     public MovieRank(int index, Movie movie,String type) {
         if(type.equals("follow")){
@@ -28,8 +28,8 @@ public class MovieRank {
             this.movieId = movie.getMovieId();
             this.picture = movie.getPicture();
             this.name = movie.getC_name();
-            this.actors = movie.getActors().stream().map(Actor::getName).collect(Collectors.toList());
-            this.time = movie.getTime();
+            this.actors = movie.getActors().stream().map(Actor::getName).collect(Collectors.toList()).subList(0,3);
+            this.date = movie.getDate();
             this.follow = movie.getFollow();
             this.rank = 0;
         }else {
@@ -37,8 +37,8 @@ public class MovieRank {
             this.movieId = movie.getMovieId();
             this.picture = movie.getPicture();
             this.name = movie.getC_name();
-            this.actors = movie.getActors().stream().map(Actor::getName).collect(Collectors.toList());
-            this.time = movie.getTime();
+            this.actors = movie.getActors().stream().map(Actor::getName).collect(Collectors.toList()).subList(0,3);
+            this.date = movie.getDate();
             this.follow = 0;
             this.rank = movie.getRank();
         }

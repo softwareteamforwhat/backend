@@ -6,6 +6,7 @@ import com.example.hcibackend.po.MovieSearchForm;
 import com.example.hcibackend.service.MovieService;
 import com.example.hcibackend.vo.MovieList;
 import com.example.hcibackend.vo.MovieRank;
+import com.example.hcibackend.vo.MovieSearch;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -42,5 +43,10 @@ public class MovieServiceImp implements MovieService {
     @Override
     public Movie getMovieInfo(String id) {
         return movieDao.getMovieInfo(id);
+    }
+
+    @Override
+    public List<MovieSearch> searchMovie(String keyword) {
+        return movieDao.searchMovie(keyword);
     }
 }

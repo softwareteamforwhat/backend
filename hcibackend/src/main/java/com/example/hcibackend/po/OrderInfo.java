@@ -12,6 +12,12 @@ import java.util.Map;
 @NoArgsConstructor
 public class OrderInfo {
     private long uid;
-    private String scheduleId;
-    private List<Map<Integer,Integer>> seats;
+    private String movieId;
+    private String cinema;
+    private String purchaseTime;
+    private String session;
+    private String lang;
+    private String hall;
+    private int unitPrice;
+    private Map<Integer,Integer> seats;
 }

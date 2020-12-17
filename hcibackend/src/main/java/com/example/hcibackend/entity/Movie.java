@@ -36,8 +36,14 @@ public class Movie implements Serializable {
     @Field(name = "length")
     private String length;
 
+    @Field(name = "date")
+    private String date;
+
+    @Field(name = "year")
+    private int year;
+
     @Field(name = "time")
-    private String time;
+    private int time;
 
     @Field(name = "description")
     private String description;
@@ -58,7 +64,7 @@ public class Movie implements Serializable {
     private int follow;
 
     @Field(name = "rank")
-    private int rank;
+    private double rank;
 }
 
 

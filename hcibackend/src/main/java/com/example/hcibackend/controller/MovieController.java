@@ -37,4 +37,9 @@ public class MovieController {
     public ResponseVO getMovieInfo(@RequestParam String id){
         return ResponseVO.buildSuccess(movieService.getMovieInfo(id));
     }
+
+    @GetMapping("/getSearch")
+    public ResponseVO searchMovie(@RequestParam String keyword){
+        return ResponseVO.buildSuccess(movieService.searchMovie(keyword));
+    }
 }
