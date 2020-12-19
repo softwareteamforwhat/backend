@@ -25,8 +25,8 @@ public class CinemaBasic {
         this.address = cinema.getAddress();
         this.cinemaId = cinema.getCinemaId();
         this.picture = cinema.getPicture();
-        this.distance = (int) (Math.random() * 5 + 5);
-        this.price = (int)(Math.random()*100+50);
+        this.distance = cinema.getDistance();
+        this.price = cinema.getPrice();
         this.name = cinema.getName();
         this.phone = cinema.getPhone();
         this.services = cinema.getServices();

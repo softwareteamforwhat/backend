@@ -3,7 +3,6 @@ package com.example.hcibackend.controller;
 import com.example.hcibackend.po.CinemaSearchForm;
 import com.example.hcibackend.service.CinemaService;
 import com.example.hcibackend.vo.ResponseVO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController()
@@ -26,7 +25,7 @@ public class CinemaController {
     }
 
     @GetMapping("/getSchedule")
-    public ResponseVO getSchedule(@RequestParam String movieId,@RequestParam String cinemaId){
-        return ResponseVO.buildSuccess(cinemaService.getSchedule(cinemaId,movieId));
+    public ResponseVO getSchedule(@RequestParam String cinemaId){
+        return ResponseVO.buildSuccess(cinemaService.getSchedule(cinemaId));
     }
 }

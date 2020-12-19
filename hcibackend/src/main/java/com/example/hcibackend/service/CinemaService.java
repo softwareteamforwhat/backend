@@ -12,5 +12,5 @@ public interface CinemaService {
 
     Cinema getCinemaInfo(String id);
 
-    List<Schedule> getSchedule(String cinemaId, String movieId);
+    List<Schedule> getSchedule(String cinemaId);
 }

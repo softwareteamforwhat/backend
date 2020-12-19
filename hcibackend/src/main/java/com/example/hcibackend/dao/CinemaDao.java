@@ -31,13 +31,18 @@ public class CinemaDao {
         String address = cinemaSearchForm.getAddress();
         String tag = cinemaSearchForm.getTag();
         String sortType = cinemaSearchForm.getSortType();
+        String movieId = cinemaSearchForm.getMovieId();
         int page = cinemaSearchForm.getPage();
         Query query = new Query();
         Criteria criteria = new Criteria();
-        criteria.andOperator(Criteria.where("name").regex(brand),Criteria.where("address").regex(address),Criteria.where("services.name").regex(tag));
+        if(movieId!=null){
+            criteria.andOperator(Criteria.where("name").regex(brand),Criteria.where("address").regex(address),Criteria.where("services.name").regex(tag),Criteria.where("movies").is(movieId));
+        }else {
+            criteria.andOperator(Criteria.where("name").regex(brand),Criteria.where("address").regex(address),Criteria.where("services.name").regex(tag));
+        }
         query.addCriteria(criteria);
         long count = mongoTemplate.count(query, Cinema.class,"cinema");
-        List<Cinema> cinemas = mongoTemplate.find(query.with(Sort.by(Sort.Order.desc(sortType))).skip(10 * (page - 1)).limit(10), Cinema.class,"cinema");
+        List<Cinema> cinemas = mongoTemplate.find(query.with(Sort.by(Sort.Order.asc(sortType))).skip(10 * (page - 1)).limit(10), Cinema.class,"cinema");
         CinemaList cinemaList = new CinemaList();
         cinemaList.setSum(count);
         List<CinemaBasic> cinemaBasics = new ArrayList<>();
@@ -52,10 +57,10 @@ public class CinemaDao {
         return mongoTemplate.findOne(new Query(Criteria.where("cinemaId").is(id)), Cinema.class,"cinema");
     }
 
-    public List<Schedule> getSchedule(String cinemaId, String movieId) {
+    public List<Schedule> getSchedule(String cinemaId) {
         Query query = new Query();
         Criteria criteria = new Criteria();
-        criteria.andOperator(Criteria.where("cinemaId").is(cinemaId),Criteria.where("movieId").is(movieId));
+        criteria.andOperator(Criteria.where("cinemaId").is(cinemaId));
         return mongoTemplate.find(query.addCriteria(criteria),Schedule.class,"schedule");
     }
 }

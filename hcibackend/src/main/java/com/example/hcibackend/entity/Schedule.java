@@ -15,8 +15,7 @@ public class Schedule{
     private String movie;
     private String cinemaId;
     private String cinema;
-    private String startTime;
-    private String endTime;
+    private String session;
     private String hall;
     private String price;
 }

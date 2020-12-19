@@ -30,7 +30,7 @@ public class CinemaServiceImp implements CinemaService {
     }
 
     @Override
-    public List<Schedule> getSchedule(String cinemaId, String movieId) {
-        return cinemaDao.getSchedule(cinemaId,movieId);
+    public List<Schedule> getSchedule(String cinemaId) {
+        return cinemaDao.getSchedule(cinemaId);
     }
 }

@@ -29,6 +29,12 @@ public class Cinema implements Serializable {
     @Field(name = "phone")
     private String phone;
 
+    @Field(name = "price")
+    private int price;
+
+    @Field(name = "distance")
+    private int distance;
+
     @Field(name = "services")
     private List<Service> services;
 }
