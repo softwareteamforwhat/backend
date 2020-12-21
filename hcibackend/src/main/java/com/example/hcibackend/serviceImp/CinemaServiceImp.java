@@ -2,11 +2,10 @@ package com.example.hcibackend.serviceImp;
 
 import com.example.hcibackend.dao.CinemaDao;
 import com.example.hcibackend.entity.Cinema;
-import com.example.hcibackend.entity.Schedule;
 import com.example.hcibackend.po.CinemaSearchForm;
 import com.example.hcibackend.service.CinemaService;
 import com.example.hcibackend.vo.CinemaList;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.hcibackend.vo.MovieSchedule;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,7 +29,7 @@ public class CinemaServiceImp implements CinemaService {
     }
 
     @Override
-    public List<Schedule> getSchedule(String cinemaId) {
+    public List<MovieSchedule> getSchedule(String cinemaId) {
         return cinemaDao.getSchedule(cinemaId);
     }
 }

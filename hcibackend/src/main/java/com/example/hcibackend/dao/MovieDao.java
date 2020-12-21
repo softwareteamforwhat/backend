@@ -82,7 +82,7 @@ public class MovieDao {
                 break;
         }
         query.addCriteria(criteria);
-        query.fields().include("movieId").include("picture").include("c_name").include("e_name").include("type").include("area").include("length").include("date");
+        query.fields().include("movieId").include("picture").include("c_name").include("e_name").include("type").include("area").include("length").include("date").include("state");
         long count = mongoTemplate.count(query,Movie.class,"movie");
         movieList = mongoTemplate.find(query.with(Sort.by(Sort.Order.desc(sortType))).skip(15 * (page - 1)).limit(15),Movie.class,"movie");
         List<MovieBasic> movieBasics = new ArrayList<>();

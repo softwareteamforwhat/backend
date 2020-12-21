@@ -26,7 +26,11 @@ public class MovieSearch {
         this.picture = movie.getPicture();
         this.c_name = movie.getC_name();
         this.e_name = movie.getE_name();
-        this.actors = movie.getActors().stream().map(Actor::getName).collect(Collectors.toList()).subList(0,3);
+        if(movie.getActors().size()>3){
+            this.actors = movie.getActors().stream().map(Actor::getName).collect(Collectors.toList()).subList(0,3);
+        }else {
+            this.actors = movie.getActors().stream().map(Actor::getName).collect(Collectors.toList());
+        }
         this.date = movie.getDate();
         this.rank = movie.getRank();
     }

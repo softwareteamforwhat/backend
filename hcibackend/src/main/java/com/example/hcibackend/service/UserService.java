@@ -1,9 +1,13 @@
 package com.example.hcibackend.service;
 
-import com.example.hcibackend.entity.User;
 import com.example.hcibackend.po.LoginForm;
 import com.example.hcibackend.po.RegisterForm;
+import com.example.hcibackend.vo.MovieCollect;
+import com.example.hcibackend.vo.MovieRank;
+import com.example.hcibackend.vo.UserInfo;
 import com.example.hcibackend.vo.UserVO;
+
+import java.util.List;
 
 public interface UserService {
     /**
@@ -46,5 +50,20 @@ public interface UserService {
      * @param movieId 电影id
      * @return 是否成功
      */
-    boolean changeFollow(String uid, String movieId);
+    boolean changeFollow(long uid, String movieId);
+
+    /**
+     * 获得收藏电影
+     * @param uid 用户id
+     * @return 电影列表
+     */
+    List<MovieCollect> getUserFavorite(long uid);
+
+    UserInfo getUserInfo(long uid);
+
+    boolean modifyUserInfo(long uid, String nickname, String avatar);
+
+    boolean modifyPassword(long uid, String pwd);
+
+    boolean existEmail(String email);
 }

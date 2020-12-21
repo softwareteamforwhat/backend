@@ -5,8 +5,7 @@ import com.example.hcibackend.entity.Movie;
 import com.example.hcibackend.entity.Schedule;
 import com.example.hcibackend.entity.Service;
 import com.example.hcibackend.po.CinemaSearchForm;
-import com.example.hcibackend.vo.CinemaBasic;
-import com.example.hcibackend.vo.CinemaList;
+import com.example.hcibackend.vo.*;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -36,9 +35,9 @@ public class CinemaDao {
         Query query = new Query();
         Criteria criteria = new Criteria();
         if(movieId!=null){
-            criteria.andOperator(Criteria.where("name").regex(brand),Criteria.where("address").regex(address),Criteria.where("services.name").regex(tag),Criteria.where("movies").is(movieId));
+            criteria.andOperator(Criteria.where("name").regex(brand),Criteria.where("address").regex(address),Criteria.where("tag").is(tag),Criteria.where("movies").is(movieId));
         }else {
-            criteria.andOperator(Criteria.where("name").regex(brand),Criteria.where("address").regex(address),Criteria.where("services.name").regex(tag));
+            criteria.andOperator(Criteria.where("name").regex(brand),Criteria.where("address").regex(address),Criteria.where("tag").is(tag));
         }
         query.addCriteria(criteria);
         long count = mongoTemplate.count(query, Cinema.class,"cinema");
@@ -57,10 +56,32 @@ public class CinemaDao {
         return mongoTemplate.findOne(new Query(Criteria.where("cinemaId").is(id)), Cinema.class,"cinema");
     }
 
-    public List<Schedule> getSchedule(String cinemaId) {
+    public List<MovieSchedule> getSchedule(String cinemaId) {
+        Cinema cinema = mongoTemplate.findOne(new Query(Criteria.where("cinemaId").is(cinemaId)),Cinema.class,"cinema");
+        List<MovieSchedule> movieSchedules = new ArrayList<>();
+        if(cinema!=null){
+            for(String movieId:cinema.getMovies()){
+                MovieSchedule movieSchedule = new MovieSchedule();
+                Movie movie = mongoTemplate.findOne(new Query(Criteria.where("movieId").is(movieId)),Movie.class,"movie");
+                if(movie!=null){
+                    movieSchedule.setMovieBasic(new MovieBasic(movie));
+                    movieSchedules.add(movieSchedule);
+                }
+            }
+        }
         Query query = new Query();
         Criteria criteria = new Criteria();
         criteria.andOperator(Criteria.where("cinemaId").is(cinemaId));
-        return mongoTemplate.find(query.addCriteria(criteria),Schedule.class,"schedule");
+        List<Schedule> schedules =  mongoTemplate.find(query.addCriteria(criteria),Schedule.class,"schedule");
+        for(MovieSchedule movieSchedule:movieSchedules){
+            List<ScheduleBasic> scheduleBasics = new ArrayList<>();
+            for(Schedule schedule:schedules){
+                if(schedule.getMovieId().equals(movieSchedule.getMovieBasic().getMovieId())){
+                    scheduleBasics.add(new ScheduleBasic(schedule));
+                }
+            }
+            movieSchedule.setSchedules(scheduleBasics);
+        }
+        return movieSchedules;
     }
 }

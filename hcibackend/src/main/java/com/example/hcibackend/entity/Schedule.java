@@ -17,5 +17,5 @@ public class Schedule{
     private String cinema;
     private String session;
     private String hall;
-    private String price;
+    private int price;
 }

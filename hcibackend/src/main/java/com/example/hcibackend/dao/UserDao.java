@@ -1,9 +1,13 @@
 package com.example.hcibackend.dao;
 
+import com.example.hcibackend.entity.Movie;
 import com.example.hcibackend.entity.User;
 import com.example.hcibackend.po.LoginForm;
 import com.example.hcibackend.po.RegisterForm;
 import com.example.hcibackend.service.RedisService;
+import com.example.hcibackend.vo.MovieCollect;
+import com.example.hcibackend.vo.MovieRank;
+import com.example.hcibackend.vo.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -11,6 +15,9 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class UserDao {
@@ -39,8 +46,10 @@ public class UserDao {
         user.setNickname(registerForm.getNickname());
         user.setPassword(registerForm.getPassword());
         user.setAvatar("https://img.meituan.net/maoyanuser/c524afeb2e56c93093a1b7c26d5ac6b114424.png");
+        if(mongoTemplate.exists(new Query(Criteria.where("email").is(registerForm.getEmail())),User.class)){
+            return "用户已存在";
+        }
         mongoTemplate.insert(user,"user");
-
         return String.valueOf(uid);
     }
 
@@ -81,5 +90,62 @@ public class UserDao {
         Update update = new Update();
         update.set("password",pwd);
         mongoTemplate.updateFirst(new Query(Criteria.where("email").is(email)),update,User.class,"user");
+    }
+
+    /**
+     * 获得收藏
+     * @param uid 用户id
+     * @return 电影列表
+     */
+    public List<MovieCollect> getUserFavorite(long uid) {
+        List<Movie> movies = mongoTemplate.find(new Query(Criteria.where("collectors").is(uid)),Movie.class,"movie");
+        List<MovieCollect> movieCollects = new ArrayList<>();
+        for(Movie movie:movies){
+            movieCollects.add(new MovieCollect(movie));
+        }
+        return movieCollects;
+    }
+
+    /**
+     * 获得用户信息
+     * @param uid 用户id
+     * @return userInfo
+     */
+    public UserInfo getUserInfo(long uid) {
+        User user = mongoTemplate.findOne(new Query(Criteria.where("_id").is(uid)),User.class,"user");
+        UserInfo userInfo = new UserInfo();
+        if(user!=null){
+            userInfo.setEmail(user.getEmail());
+            userInfo.setNickname(user.getNickname());
+            userInfo.setAvatar(user.getAvatar());
+        }
+        return userInfo;
+    }
+
+    public boolean modifyUserInfo(long uid, String nickname, String avatar) {
+        Update update = new Update();
+        update.set("nickname",nickname);
+        update.set("avatar",avatar);
+        try {
+            mongoTemplate.updateFirst(new Query(Criteria.where("_id").is(uid)),update,User.class);
+            return true;
+        }catch (Exception e){
+            return false;
+        }
+    }
+
+    public boolean modifyPassword(long uid, String pwd) {
+        Update update = new Update();
+        update.set("password",pwd);
+        try {
+            mongoTemplate.updateFirst(new Query(Criteria.where("_id").is(uid)),update,User.class);
+            return true;
+        }catch (Exception e){
+            return false;
+        }
+    }
+
+    public boolean existEmail(String email) {
+        return mongoTemplate.exists(new Query(Criteria.where("email").is(email)),User.class,"user");
     }
 }

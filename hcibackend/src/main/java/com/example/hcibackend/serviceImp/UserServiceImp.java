@@ -8,8 +8,9 @@ import com.example.hcibackend.po.RegisterForm;
 import com.example.hcibackend.service.RedisService;
 import com.example.hcibackend.service.TokenService;
 import com.example.hcibackend.service.UserService;
+import com.example.hcibackend.vo.MovieCollect;
+import com.example.hcibackend.vo.UserInfo;
 import com.example.hcibackend.vo.UserVO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -17,27 +18,31 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @Service
 public class UserServiceImp implements UserService {
 
-    @Autowired
-    private RedisService redisService;
+    private final RedisService redisService;
 
-    @Autowired
-    private TokenService tokenService;
+    private final TokenService tokenService;
 
-    @Autowired
-    private UserDao userDao;
+    private final UserDao userDao;
 
-    @Autowired
-    private MovieDao movieDao;
+    private final MovieDao movieDao;
 
     @Resource
     private JavaMailSender javaMailSender;
 
     @Value("${spring.mail.username}")
     private String from;
+
+    public UserServiceImp(RedisService redisService, TokenService tokenService, UserDao userDao, MovieDao movieDao) {
+        this.redisService = redisService;
+        this.tokenService = tokenService;
+        this.userDao = userDao;
+        this.movieDao = movieDao;
+    }
 
     @Override
     public void sendCode(String email) {
@@ -70,6 +75,9 @@ public class UserServiceImp implements UserService {
     @Override
     public UserVO register(RegisterForm registerForm) {
         String id = userDao.insertUser(registerForm);
+        if(id.equals("用户已存在")){
+            return null;
+        }
         UserVO userVO = new UserVO();
         userVO.setAvatar("https://img.meituan.net/maoyanuser/c524afeb2e56c93093a1b7c26d5ac6b114424.png");
         userVO.setId(id);
@@ -104,9 +112,34 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public boolean changeFollow(String uid, String movieId) {
-        int state = movieDao.changeFollow(Long.parseLong(uid),movieId);
+    public boolean changeFollow(long uid, String movieId) {
+        int state = movieDao.changeFollow(uid,movieId);
         return state == 0;
+    }
+
+    @Override
+    public List<MovieCollect> getUserFavorite(long uid) {
+        return userDao.getUserFavorite(uid);
+    }
+
+    @Override
+    public UserInfo getUserInfo(long uid) {
+        return userDao.getUserInfo(uid);
+    }
+
+    @Override
+    public boolean modifyUserInfo(long uid, String nickname, String avatar) {
+        return userDao.modifyUserInfo(uid,nickname,avatar);
+    }
+
+    @Override
+    public boolean modifyPassword(long uid, String pwd) {
+        return userDao.modifyPassword(uid,pwd);
+    }
+
+    @Override
+    public boolean existEmail(String email) {
+        return userDao.existEmail(email);
     }
 
     /**

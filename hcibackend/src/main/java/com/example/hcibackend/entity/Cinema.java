@@ -37,4 +37,10 @@ public class Cinema implements Serializable {
 
     @Field(name = "services")
     private List<Service> services;
+
+    @Field(name = "movies")
+    private List<String> movies;
+
+    @Field(name = "tag")
+    private List<String> tag;
 }

@@ -32,7 +32,9 @@ public class UserController {
     public ResponseVO sendCode(@RequestParam String email){
         if(!checkEmailFormat(email)){
             return ResponseVO.buildFailure("邮箱格式不正确");
-        }else {
+        }else if(userService.existEmail(email)){
+            return ResponseVO.buildFailure("该邮箱用户已存在");
+        } else {
             userService.sendCode(email);
             return ResponseVO.buildSuccess("验证码已发送");
         }
@@ -43,6 +45,9 @@ public class UserController {
         int status = userService.checkCode(registerForm.getEmail(),registerForm.getCode());
         if(status==0){
             UserVO user = userService.register(registerForm);
+            if(user == null){
+                return ResponseVO.buildFailure("用户邮箱已存在");
+            }
             return ResponseVO.buildSuccess(user);
         }else if(status==1){
             return ResponseVO.buildFailure("验证码错误");
@@ -63,11 +68,43 @@ public class UserController {
 
     @UserLoginToken
     @PostMapping("/changeFollow")
-    public ResponseVO changeFollow(@RequestParam String uid,@RequestParam String movieId){
+    public ResponseVO changeFollow(@RequestParam long uid,@RequestParam String movieId){
         if(userService.changeFollow(uid,movieId)){
             return ResponseVO.buildSuccess("修改收藏状态成功");
         }else {
             return ResponseVO.buildFailure("修改收藏状态失败");
+        }
+    }
+
+    @UserLoginToken
+    @GetMapping("/getUserFavorite")
+    public ResponseVO getUserFavorite(@RequestParam long uid){
+        return ResponseVO.buildSuccess(userService.getUserFavorite(uid));
+    }
+
+    @UserLoginToken
+    @GetMapping("/getUserInfo")
+    public ResponseVO getUserInfo(@RequestParam long uid){
+        return ResponseVO.buildSuccess(userService.getUserInfo(uid));
+    }
+
+    @UserLoginToken
+    @PostMapping("/modifyUserInfo")
+    public ResponseVO modifyUserInfo(@RequestParam long uid,@RequestParam String nickname, @RequestParam String avatar){
+        if(userService.modifyUserInfo(uid,nickname,avatar)){
+            return ResponseVO.buildSuccess("修改用户信息成功");
+        }else {
+            return ResponseVO.buildFailure("修改用户信息失败");
+        }
+    }
+
+    @UserLoginToken
+    @PostMapping("/modifyPassword")
+    public ResponseVO modifyPassword(@RequestParam long uid,@RequestParam String pwd){
+        if(userService.modifyPassword(uid,pwd)){
+            return ResponseVO.buildSuccess("修改用户密码成功");
+        }else {
+            return ResponseVO.buildFailure("修改用户密码失败");
         }
     }
 
