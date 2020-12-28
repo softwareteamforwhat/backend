@@ -4,6 +4,7 @@ import com.example.hcibackend.entity.Movie;
 import com.example.hcibackend.entity.Order;
 import com.example.hcibackend.po.OrderInfo;
 import com.example.hcibackend.vo.MovieBasic;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -36,6 +37,7 @@ public class OrderDao {
         order.setLang(order.getLang());
         order.setAmount(orderInfo.getSeats().size());
         order.setPurchaseTime(orderInfo.getPurchaseTime());
+        order.setOperateTime(System.currentTimeMillis());
         order.setSession(orderInfo.getSession());
         List<String> seats = new ArrayList<>();
         Map<Integer,Integer> seatsMap = orderInfo.getSeats();
@@ -53,17 +55,22 @@ public class OrderDao {
     }
 
     public List<Order> getUserOrder(long uid) {
-        return mongoTemplate.find(new Query(Criteria.where("uid").is(uid)),Order.class,"order");
+        return mongoTemplate.find(new Query(Criteria.where("uid").is(uid).and("state").is(0)).with(Sort.by(Sort.Order.desc("operateTime"))),Order.class,"order");
     }
 
     public int returnUserTicket(long uid, String orderId) {
         Update update = new Update();
         update.set("state",1);
+        update.set("operateTime",System.currentTimeMillis());
         try {
             mongoTemplate.updateFirst(new Query(Criteria.where("uid").is(uid).and("orderId").is(orderId)),update,Order.class);
             return 0;
         }catch (Exception e){
             return 1;
         }
+    }
+
+    public List<Order> getReturnOrder(long uid) {
+        return mongoTemplate.find(new Query(Criteria.where("uid").is(uid).and("state").is(1)).with(Sort.by(Sort.Order.desc("operateTime"))),Order.class,"order");
     }
 }

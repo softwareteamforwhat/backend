@@ -11,4 +11,7 @@ public interface OrderService {
     List<Order> getUserOrder(long uid);
 
     int returnUserTicket(long uid, String orderId);
+
+    List<Order> getReturnOrder(long uid);
+
 }

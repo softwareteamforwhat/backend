@@ -29,8 +29,10 @@ spring:
 
   data:
     mongodb:
-#      uri: mongodb://root:123456@localhost:27017/Cinema
-      uri: mongodb://localhost:27017/Cinema
+      uri: mongodb://root:123456@localhost:27017/Cinema
+#      uri: mongodb://localhost:27017/Cinema
+
+
 
 server:
   port: 8081

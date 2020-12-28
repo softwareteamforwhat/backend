@@ -6,6 +6,7 @@ import com.example.hcibackend.po.OrderInfo;
 import com.example.hcibackend.service.OrderService;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -30,5 +31,10 @@ public class OrderServiceImp implements OrderService {
     @Override
     public int returnUserTicket(long uid, String orderId) {
         return orderDao.returnUserTicket(uid,orderId);
+    }
+
+    @Override
+    public List<Order> getReturnOrder(long uid) {
+        return orderDao.getReturnOrder(uid);
     }
 }

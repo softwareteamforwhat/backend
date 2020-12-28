@@ -1,11 +1,9 @@
 package com.example.hcibackend.dao;
 
 import com.example.hcibackend.entity.Movie;
+import com.example.hcibackend.entity.User;
 import com.example.hcibackend.po.MovieSearchForm;
-import com.example.hcibackend.vo.MovieBasic;
-import com.example.hcibackend.vo.MovieList;
-import com.example.hcibackend.vo.MovieRank;
-import com.example.hcibackend.vo.MovieSearch;
+import com.example.hcibackend.vo.*;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -15,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class MovieDao {
@@ -82,7 +81,6 @@ public class MovieDao {
                 break;
         }
         query.addCriteria(criteria);
-        query.fields().include("movieId").include("picture").include("c_name").include("e_name").include("type").include("area").include("length").include("date").include("state");
         long count = mongoTemplate.count(query,Movie.class,"movie");
         movieList = mongoTemplate.find(query.with(Sort.by(Sort.Order.desc(sortType))).skip(15 * (page - 1)).limit(15),Movie.class,"movie");
         List<MovieBasic> movieBasics = new ArrayList<>();
@@ -130,16 +128,28 @@ public class MovieDao {
      */
     public int changeFollow(Long uid, String movieId) {
         Movie movie = mongoTemplate.findOne(new Query(Criteria.where("movieId").is(movieId)), Movie.class,"movie");
-        if(movie!=null){
+        User user = mongoTemplate.findOne(new Query(Criteria.where("_id").is(uid)),User.class,"user");
+        if(movie!=null && user!=null){
             List<Long> collectors = movie.getCollectors();
             if(collectors.contains(uid)){
                 collectors.remove(uid);
             }else {
                 collectors.add(uid);
             }
-            Update update = new Update();
-            update.set("collectors",collectors);
-            mongoTemplate.updateFirst(new Query(Criteria.where("movieId").is(movieId)),update,Movie.class,"movie");
+            Update update1 = new Update();
+            update1.set("collectors",collectors);
+            mongoTemplate.updateFirst(new Query(Criteria.where("movieId").is(movieId)),update1,Movie.class,"movie");
+
+            List<MovieCollect> collects = user.getMovieCollects();
+            List<String> movieIds = collects.stream().map(MovieCollect::getMovieId).collect(Collectors.toList());
+            if(movieIds.contains(movieId)){
+                collects.removeIf(movieCollect -> movieCollect.getMovieId().equals(movieId));
+            }else {
+                collects.add(new MovieCollect(movie));
+            }
+            Update update2 = new Update();
+            update2.set("collects",collects);
+            mongoTemplate.updateFirst(new Query(Criteria.where("_id").is(uid)),update2,User.class);
             return 0;
         }else {
             return 1;
@@ -157,5 +167,14 @@ public class MovieDao {
         }
         return movieSearches;
 
+    }
+
+    public boolean isCollect(long uid, String movieId) {
+        Movie movie = mongoTemplate.findOne(new Query(Criteria.where("movieId").is(movieId)),Movie.class,"movie");
+        if(movie!=null){
+            List<Long> collectors = movie.getCollectors();
+            return collectors.contains(uid);
+        }
+        return false;
     }
 }

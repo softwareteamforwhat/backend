@@ -3,6 +3,7 @@ package com.example.hcibackend.controller;
 import com.example.hcibackend.config.UserLoginToken;
 import com.example.hcibackend.po.LoginForm;
 import com.example.hcibackend.po.RegisterForm;
+import com.example.hcibackend.service.TokenService;
 import com.example.hcibackend.service.UserService;
 import com.example.hcibackend.vo.ResponseVO;
 import com.example.hcibackend.vo.UserVO;
@@ -101,8 +102,9 @@ public class UserController {
     @UserLoginToken
     @PostMapping("/modifyPassword")
     public ResponseVO modifyPassword(@RequestParam long uid,@RequestParam String pwd){
-        if(userService.modifyPassword(uid,pwd)){
-            return ResponseVO.buildSuccess("修改用户密码成功");
+        String token = userService.modifyPassword(uid,pwd);
+        if(!token.equals("")){
+            return ResponseVO.buildSuccess(token);
         }else {
             return ResponseVO.buildFailure("修改用户密码失败");
         }

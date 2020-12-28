@@ -3,7 +3,6 @@ package com.example.hcibackend.service;
 import com.example.hcibackend.po.LoginForm;
 import com.example.hcibackend.po.RegisterForm;
 import com.example.hcibackend.vo.MovieCollect;
-import com.example.hcibackend.vo.MovieRank;
 import com.example.hcibackend.vo.UserInfo;
 import com.example.hcibackend.vo.UserVO;
 
@@ -63,7 +62,7 @@ public interface UserService {
 
     boolean modifyUserInfo(long uid, String nickname, String avatar);
 
-    boolean modifyPassword(long uid, String pwd);
+    String modifyPassword(long uid, String pwd);
 
     boolean existEmail(String email);
 }

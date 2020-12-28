@@ -133,7 +133,7 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public boolean modifyPassword(long uid, String pwd) {
+    public String modifyPassword(long uid, String pwd) {
         return userDao.modifyPassword(uid,pwd);
     }
 

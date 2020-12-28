@@ -49,4 +49,9 @@ public class MovieServiceImp implements MovieService {
     public List<MovieSearch> searchMovie(String keyword) {
         return movieDao.searchMovie(keyword);
     }
+
+    @Override
+    public boolean isCollect(long uid, String movieId) {
+        return movieDao.isCollect(uid,movieId);
+    }
 }

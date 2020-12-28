@@ -5,7 +5,6 @@ import com.example.hcibackend.entity.Order;
 import com.example.hcibackend.po.OrderInfo;
 import com.example.hcibackend.service.OrderService;
 import com.example.hcibackend.vo.ResponseVO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,8 +12,11 @@ import java.util.List;
 @RestController()
 public class OrderController {
 
-    @Autowired
-    private OrderService orderService;
+    private final OrderService orderService;
+
+    public OrderController(OrderService orderService) {
+        this.orderService = orderService;
+    }
 
     @UserLoginToken
     @PostMapping("/saveOrder")
@@ -31,6 +33,17 @@ public class OrderController {
     @GetMapping("/getUserOrder")
     public ResponseVO getUserOrder(@RequestParam long uid){
         List<Order> result = orderService.getUserOrder(uid);
+        if(result!=null){
+            return ResponseVO.buildSuccess(result);
+        }else {
+            return ResponseVO.buildFailure("获取用户订单失败");
+        }
+    }
+
+    @UserLoginToken
+    @GetMapping("/getReturnOrder")
+    public ResponseVO getReturnOrder(@RequestParam long uid){
+        List<Order> result = orderService.getReturnOrder(uid);
         if(result!=null){
             return ResponseVO.buildSuccess(result);
         }else {

@@ -20,6 +20,7 @@ public class Order {
     private String cinema;
     private String session;
     private String purchaseTime;
+    private long operateTime;
     private String hall;
     private int price;
     private String lang;

@@ -17,6 +17,7 @@ public class MovieSearch {
     private String picture;
     private String c_name;
     private String e_name;
+    private List<String> type;
     private List<String> actors;
     private String date;
     private double rank;
@@ -26,6 +27,7 @@ public class MovieSearch {
         this.picture = movie.getPicture();
         this.c_name = movie.getC_name();
         this.e_name = movie.getE_name();
+        this.type = movie.getType();
         if(movie.getActors().size()>3){
             this.actors = movie.getActors().stream().map(Actor::getName).collect(Collectors.toList()).subList(0,3);
         }else {

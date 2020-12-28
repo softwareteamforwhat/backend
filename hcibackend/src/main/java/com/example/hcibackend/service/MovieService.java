@@ -20,4 +20,6 @@ public interface MovieService {
     Movie getMovieInfo(String id);
 
     List<MovieSearch> searchMovie(String keyword);
+
+    boolean isCollect(long uid, String movieId);
 }

@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MovieCollect {
+    private String movieId;
     private String picture;
     private String c_name;
     private String e_name;
@@ -23,6 +24,7 @@ public class MovieCollect {
     private String date;
 
     public MovieCollect(Movie movie) {
+        this.movieId = movie.getMovieId();
         this.picture = movie.getPicture();
         this.c_name = movie.getC_name();
         this.e_name = movie.getE_name();

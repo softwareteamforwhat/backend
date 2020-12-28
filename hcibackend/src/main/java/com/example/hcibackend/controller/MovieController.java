@@ -1,5 +1,6 @@
 package com.example.hcibackend.controller;
 
+import com.example.hcibackend.config.UserLoginToken;
 import com.example.hcibackend.po.MovieSearchForm;
 import com.example.hcibackend.service.MovieService;
 import com.example.hcibackend.vo.ResponseVO;
@@ -41,5 +42,11 @@ public class MovieController {
     @GetMapping("/getSearch")
     public ResponseVO searchMovie(@RequestParam String keyword){
         return ResponseVO.buildSuccess(movieService.searchMovie(keyword));
+    }
+
+    @UserLoginToken
+    @GetMapping("/isCollect")
+    public ResponseVO isCollect(@RequestParam long uid,@RequestParam String movieId){
+        return ResponseVO.buildSuccess(movieService.isCollect(uid,movieId));
     }
 }
