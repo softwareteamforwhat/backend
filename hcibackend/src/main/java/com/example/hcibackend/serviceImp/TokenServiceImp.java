@@ -16,4 +16,14 @@ public class TokenServiceImp implements TokenService {
                 .sign(Algorithm.HMAC256(user.getPassword()));
         return token;
     }
+
+    @Override
+    public String getFirstToken(String uid, String password) {
+        String token="";
+        token = JWT.create().withAudience(String.valueOf(uid))
+                .sign(Algorithm.HMAC256(password));
+        return token;
+    }
+
+
 }

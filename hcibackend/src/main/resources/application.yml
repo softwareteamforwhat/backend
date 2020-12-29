@@ -33,7 +33,6 @@ spring:
 #      uri: mongodb://localhost:27017/Cinema
 
 
-
 server:
   port: 8081
 

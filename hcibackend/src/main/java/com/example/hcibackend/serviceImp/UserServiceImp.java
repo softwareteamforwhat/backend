@@ -81,7 +81,7 @@ public class UserServiceImp implements UserService {
         UserVO userVO = new UserVO();
         userVO.setAvatar("https://img.meituan.net/maoyanuser/c524afeb2e56c93093a1b7c26d5ac6b114424.png");
         userVO.setId(id);
-        userVO.setToken("token:"+id);
+        userVO.setToken(tokenService.getFirstToken(id,registerForm.getPassword()));
         return userVO;
     }
 
